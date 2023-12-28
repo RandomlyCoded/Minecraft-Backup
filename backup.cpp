@@ -1,23 +1,23 @@
 #include <iostream>
 #include <filesystem>
 
+#include "process.h"
+
 using namespace std;
 
-void sysWrap(const char *cmd)
-{
-#ifdef DEBUG_BUILD
-    cout << "\033[01;33m" << cmd << "\033[0m\b" << endl;
-#endif // DEBUG_BUILD
-
-    system(cmd);
-}
-
-void backupDir (string world, filesystem::path dir)
+void backupDir (const string &world, const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "backup \033[01;34m" << (dir.empty () ? "world root" : dir.relative_path ().c_str ()) << "\033[00m" << endl;
 
     // add directory to tar file
-    sysWrap (("tar --no-recursion -" + ((dir.empty () ? string("c") : string("r")) + "f ../backups/" + world) + "-backup.tar.xz " + world + "/" + dir.string () + "/*").c_str ());
+    randomly::call ({"tar",  "--exclude=" + (world / dir / "*" / "*").string(),
+                   "-rf", backupFile, world / dir});
+
+    /**
+     * when not executing the command via shell (as system() would do), dir/ * would not get expanded, causing tar to try to add "dir/ *" instead of dir/files
+     * that means we can't use the "--no-recurion" - option
+     * but we can filter out directories manually by excluding dir/ * / *
+    **/
 }
 
 void backupSave (string world)
@@ -33,18 +33,24 @@ void backupSave (string world)
         worldFixed += c;
     }
 
+    const auto backupFile = filesystem::path("..") / "backups" / (worldFixed + "-backup.tar.xz");
+
     // clear previous backup
-    sysWrap (("rm ../backups/" + world + "-backup.tar.xz -r").c_str ());
+    cout << "clearing previous backup" << endl;
+
+    std::filesystem::remove(backupFile);
 
     // backup files in the world root
-    backupDir (worldFixed, "");
+    backupDir (worldFixed, "", backupFile);
 
     // backup all the directories from the main world
     for (auto& p : filesystem::recursive_directory_iterator (world))
         if (p.is_directory ()) {
             auto path = filesystem::path (p.path().c_str () + world.length () + 1); // remove "world/" from beginning
-            backupDir (worldFixed, path);
+            backupDir (worldFixed, path, backupFile);
         }
+
+    cout << "\033[01;31mbackup done!\033[00m backup file: \033[01;34m" << backupFile << "\033[00m" << endl;
 }
 
 int main ()
@@ -56,7 +62,7 @@ int main ()
 
     if (!filesystem::exists(world)) {
         cout << "\033[01;04;31mworld does not exist, here are all available ones\033[00m" << endl;
-        sysWrap ("ls");
+        randomly::call ({string("ls")});
 
         return 1;
     }
