@@ -15,10 +15,10 @@ void restoreDir (string world, filesystem::path dir)
          << colorCode (Default) << endl;
 
     // create directory
-    randomly::call ({("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
+    call ({("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
 
     // copy content
-    randomly::call ({("cp " + world + "-BACKUP/" + dir.relative_path ().string () + "/* " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
+    call ({("cp " + world + "-BACKUP/" + dir.relative_path ().string () + "/* " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
 }
 
 void restoreSave (string world)
@@ -40,10 +40,10 @@ void restoreSave (string world)
     world = worldFixed;
 
     // clear save
-    randomly::call ({("rm " + world + "/ -r")});
+    call ({("rm " + world + "/ -r")});
 
     // create save directory
-    randomly::call ({("mkdir " + world + "/")});
+    call ({("mkdir " + world + "/")});
 
     // restore files in the world root
     restoreDir (world, "");

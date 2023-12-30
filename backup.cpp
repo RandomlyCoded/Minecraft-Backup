@@ -15,7 +15,7 @@ void backupDir (const string &world, const filesystem::path &dir, const filesyst
          << colorCode (Default) << endl;
 
     // add directory to tar file
-    randomly::call ({"tar",  "--exclude=" + (world / dir / "*" / "*").string(),
+    call ({"tar",  "--exclude=" + (world / dir / "*" / "*").string(),
                    "-rf", backupFile, world / dir});
 
     /**
