@@ -2,12 +2,17 @@
 #include <filesystem>
 
 #include "process.h"
+#include "fancyColoring.h"
 
 using namespace std;
+using namespace randomly;
 
 void backupDir (const string &world, const filesystem::path &dir, const filesystem::path &backupFile)
 {
-    cout << "backup \033[01;34m" << (dir.empty () ? "world root" : dir.relative_path ().c_str ()) << "\033[00m" << endl;
+    cout << "backup "
+         << colorCode (Blue) << styleCode (Bold)
+         << (dir.empty () ? "world root" : dir.relative_path ().c_str ())
+         << colorCode (Default) << endl;
 
     // add directory to tar file
     randomly::call ({"tar",  "--exclude=" + (world / dir / "*" / "*").string(),
@@ -22,7 +27,10 @@ void backupDir (const string &world, const filesystem::path &dir, const filesyst
 
 void backupSave (string world)
 {
-    cout << "starting to backup \033[01;35m" << world << "\033[00m" << endl;
+    cout << "starting to backup "
+         << colorCode (Magenta) << styleCode (Bold)
+         << world
+         << colorCode (Default) << endl;
 
     // we need to replace every whitespace with "\ "
     string worldFixed;
@@ -50,18 +58,28 @@ void backupSave (string world)
             backupDir (worldFixed, path, backupFile);
         }
 
-    cout << "\033[01;31mbackup done!\033[00m backup file: \033[01;34m" << backupFile << "\033[00m" << endl;
+    cout << colorCode (Red) << styleCode (Bold)
+         << "backup done! "
+         << colorCode (Default)
+         << "backup file: "
+         << colorCode (Blue) << styleCode (Bold) << backupFile
+         << colorCode (Default) << endl;
 }
 
 int main ()
 {
     string world;
 
-    cout << "\033[01;31menter save directory name\033[00m: " << endl;
+    cout << colorCode (Red) << styleCode (Bold)
+         << "enter save directory name"
+         << colorCode (Default) << endl;
+
     getline (cin, world); // getline reads a whole line with whitespaces
 
     if (!filesystem::exists(world)) {
-        cout << "\033[01;04;31mworld does not exist, here are all available ones\033[00m" << endl;
+        cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
+             << "world does not exist, here are all available ones: "
+             << colorCode (Default) << endl;
 
         for (auto& p : filesystem::directory_iterator (world))
             if (p.is_directory ())

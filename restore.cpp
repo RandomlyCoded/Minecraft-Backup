@@ -2,12 +2,17 @@
 #include <filesystem>
 
 #include "process.h"
+#include "fancyColoring.h"
 
 using namespace std;
+using namespace randomly;
 
 void restoreDir (string world, filesystem::path dir)
 {
-    cout << "restoring \033[01;34m" << (dir.empty () ? "world root" : dir.relative_path ().c_str ()) << "\033[00m" << endl;
+    cout << "restoring "
+         << colorCode (Blue) << styleCode (Bold)
+         << (dir.empty () ? "world root" : dir.relative_path ().c_str ())
+         << colorCode (Default) << endl;
 
     // create directory
     randomly::call ({("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
@@ -18,7 +23,10 @@ void restoreDir (string world, filesystem::path dir)
 
 void restoreSave (string world)
 {
-    cout << "restoring \033[01;35m" << world << "\033[00m" << endl;
+    cout << "restoring world "
+         << colorCode (Magenta) << styleCode (Bold)
+         << world
+         << colorCode (Default) << endl;
 
     // we need to replace every whitespace with "\ " for cp to work properly
     string worldFixed;
@@ -52,12 +60,20 @@ int main ()
 {
     string world;
 
-    cout << "\033[01;31menter save directory name\033[00m: " << endl;
+    cout << colorCode (Red) << styleCode (Bold)
+         << "enter save directory name"
+         << colorCode (Default) << endl;
+
     getline (cin, world); // getline reads a whole line with whitespaces
 
-    if (!filesystem::exists(world + "-BACKUP")) {
-        cout << "\033[01;04;31mbackup does not exist, here are all available ones\033[00m" << endl;
-        randomly::call ({"ls"});
+    if (!filesystem::exists(world)) {
+        cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
+             << "world does not exist, here are all available ones: "
+             << colorCode (Default) << endl;
+
+        for (auto& p : filesystem::directory_iterator (world))
+            if (p.is_directory ())
+                cout << p << endl;
 
         return 1;
     }
