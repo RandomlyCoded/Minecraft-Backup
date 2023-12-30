@@ -5,7 +5,7 @@ project (Minecraft-Backup LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(Helper STATIC process.h process.cpp fancyColoring.h)
+add_library(Helper STATIC process.h process.cpp utils.h)
 
 add_executable (Minecraft-Backup  backup.cpp)
 
