@@ -1,26 +1,19 @@
 #include <iostream>
 #include <filesystem>
 
+#include "process.h"
+
 using namespace std;
-
-void sysWrap(const char *cmd)
-{
-#ifdef DEBUG_BUILD
-    cout << "\033[01;33m" << cmd << "\033[0m\b" << endl;
-#endif // DEBUG_BUILD
-
-    system(cmd);
-}
 
 void restoreDir (string world, filesystem::path dir)
 {
     cout << "restoring \033[01;34m" << (dir.empty () ? "world root" : dir.relative_path ().c_str ()) << "\033[00m" << endl;
 
     // create directory
-    sysWrap (("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null").c_str ());
+    randomly::call ({("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
 
     // copy content
-    sysWrap (("cp " + world + "-BACKUP/" + dir.relative_path ().string () + "/* " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null").c_str ());
+    randomly::call ({("cp " + world + "-BACKUP/" + dir.relative_path ().string () + "/* " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
 }
 
 void restoreSave (string world)
@@ -39,10 +32,10 @@ void restoreSave (string world)
     world = worldFixed;
 
     // clear save
-    sysWrap (("rm " + world + "/ -r").c_str ());
+    randomly::call ({("rm " + world + "/ -r")});
 
     // create save directory
-    sysWrap (("mkdir " + world + "/").c_str ());
+    randomly::call ({("mkdir " + world + "/")});
 
     // restore files in the world root
     restoreDir (world, "");
@@ -64,7 +57,7 @@ int main ()
 
     if (!filesystem::exists(world + "-BACKUP")) {
         cout << "\033[01;04;31mbackup does not exist, here are all available ones\033[00m" << endl;
-        sysWrap ("ls");
+        randomly::call ({"ls"});
 
         return 1;
     }
