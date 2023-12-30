@@ -62,7 +62,10 @@ int main ()
 
     if (!filesystem::exists(world)) {
         cout << "\033[01;04;31mworld does not exist, here are all available ones\033[00m" << endl;
-        randomly::call ({string("ls")});
+
+        for (auto& p : filesystem::directory_iterator (world))
+            if (p.is_directory ())
+                cout << p << endl;
 
         return 1;
     }
