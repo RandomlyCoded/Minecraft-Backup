@@ -7,7 +7,7 @@
 using namespace std;
 using namespace randomly;
 
-void backupDir (const string &world, const filesystem::path &dir, const filesystem::path &backupFile)
+void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "backup "
          << colorCode (Blue) << styleCode (Bold)
@@ -15,8 +15,8 @@ void backupDir (const string &world, const filesystem::path &dir, const filesyst
          << colorCode (Default) << endl;
 
     // add directory to tar file
-    call ({"tar",  "--exclude=" + (world / dir / "*" / "*").string(),
-                   "-rf", backupFile, world / dir});
+    call ({"tar",  "--exclude=" + (dir / "*" / "*").string(),
+                   "-rf", backupFile, dir});
 
     /**
      * when not executing the command via shell (as system() would do), dir/ * would not get expanded, causing tar to try to add "dir/ *" instead of dir/files
@@ -41,54 +41,59 @@ void backupSave (string world)
         worldFixed += c;
     }
 
-    const auto backupFile = filesystem::path("..") / "backups" / (worldFixed + "-backup.tar.xz");
+    const auto backupFile = filesystem::current_path().parent_path() / "backups" / (worldFixed + "-backup.tar.xz");
 
     // clear previous backup
     cout << "clearing previous backup" << endl;
 
-    std::filesystem::remove(backupFile);
+    filesystem::remove(backupFile);
 
     // backup files in the world root
-    backupDir (worldFixed, "", backupFile);
+    backupDir (worldFixed, backupFile);
 
     // backup all the directories from the main world
     for (auto& p : filesystem::recursive_directory_iterator (world))
-        if (p.is_directory ()) {
-            auto path = filesystem::path (p.path().c_str () + world.length () + 1); // remove "world/" from beginning
-            backupDir (worldFixed, path, backupFile);
-        }
+        if (p.is_directory ())
+            backupDir (p, backupFile);
 
     cout << colorCode (Red) << styleCode (Bold)
          << "backup done! "
          << colorCode (Default)
          << "backup file: "
-         << colorCode (Blue) << styleCode (Bold) << backupFile
+         << colorCode (Blue) << styleCode (Bold) << styleCode (Underline)
+         << backupFile
          << colorCode (Default) << endl;
 }
 
-int main ()
+int main (int argc, char **argv)
 {
-    string world;
+    parseCommandLine(argc, argv);
 
-    cout << colorCode (Red) << styleCode (Bold)
-         << "enter save directory name"
-         << colorCode (Default) << endl;
+    if (options.world.empty()) {
+        cout << colorCode (Red) << styleCode (Bold)
+             << "enter save directory name"
+             << colorCode (Default) << endl;
 
-    getline (cin, world); // getline reads a whole line with whitespaces
+        getline (cin, options.world); // getline reads a whole line with whitespaces
+    }
+    else
+        cout << "using world from command line" << endl;
 
-    if (!filesystem::exists(world)) {
+    if (!filesystem::exists(options.savesDirectory / options.world)) {
         cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
              << "world does not exist, here are all available ones: "
              << colorCode (Default) << endl;
 
-        for (auto& p : filesystem::directory_iterator (world))
+        for (auto& p : filesystem::directory_iterator (options.savesDirectory))
             if (p.is_directory ())
                 cout << p << endl;
 
         return 1;
     }
 
-    backupSave (world);
+    filesystem::current_path(options.savesDirectory); // set the working path
+
+    backupSave (options.world);
 
     return 0;
 }
