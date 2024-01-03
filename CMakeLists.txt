@@ -5,6 +5,8 @@ project (Minecraft-Backup LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(LibArchive REQUIRED)
+
 add_library(Helper STATIC process.h process.cpp utils.h)
 
 add_executable (Minecraft-Backup  backup.cpp)
@@ -18,8 +20,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(Helper           PUBLIC RANDOMLY_DEBUGGING)
 endif()
 
-target_link_libraries(Minecraft-Backup  PRIVATE Helper)
-target_link_libraries(Minecraft-Restore PRIVATE Helper)
+target_link_libraries(Minecraft-Backup  PRIVATE Helper LibArchive::LibArchive)
+target_link_libraries(Minecraft-Restore PRIVATE Helper LibArchive::LibArchive)
 
 install (TARGETS Minecraft-Backup Minecraft-Restore
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <filesystem>
+#include <vector>
 
 #include "process.h"
 #include "utils.h"
@@ -7,7 +8,7 @@
 using namespace std;
 using namespace randomly;
 
-void restoreDir (string world, filesystem::path dir)
+void restoreDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "restoring "
          << colorCode (Blue) << styleCode (Bold)
@@ -15,10 +16,14 @@ void restoreDir (string world, filesystem::path dir)
          << colorCode (Default) << endl;
 
     // create directory
-    call ({("mkdir " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
+    filesystem::create_directory(dir);
 
-    // copy content
-    call ({("cp " + world + "-BACKUP/" + dir.relative_path ().string () + "/* " + world + "/" + dir.relative_path ().string () + "/ 2> /dev/null")});
+    cout << "created dir" << endl;
+
+    // restore content
+    readFromArchive(backupFile, dir);
+
+    cout << "finished reading" << endl;
 }
 
 void restoreSave (string world)
@@ -28,7 +33,7 @@ void restoreSave (string world)
          << world
          << colorCode (Default) << endl;
 
-    // we need to replace every whitespace with "\ " for cp to work properly
+    // we need to replace every whitespace with "\ "
     string worldFixed;
 
     for (auto c: world) {
@@ -37,48 +42,51 @@ void restoreSave (string world)
         worldFixed += c;
     }
 
-    world = worldFixed;
+    const auto backupFile = filesystem::current_path().parent_path() / "backups" / (worldFixed + "-backup.tar.xz");
 
     // clear save
-    call ({("rm " + world + "/ -r")});
+    cout << "clearing previous save" << endl;
+    filesystem::remove_all(worldFixed);
 
-    // create save directory
-    call ({("mkdir " + world + "/")});
+    const auto directories = readDirectories(backupFile);
 
-    // restore files in the world root
-    restoreDir (world, "");
-
-    // restore all the directories from the backup world
-    for (auto& p : filesystem::recursive_directory_iterator (world + "-BACKUP"))
-        if (p.is_directory ()) {
-            auto path = filesystem::path (p.path().c_str () + world.length () + 8); // remove "world-BACKUP/" from beginning
-            restoreDir (world, path);
-        }
+    // restore all the directories from the backup file
+    cout << directories.size() << endl;
+    for (auto& p: directories) {
+        std::cout << p << endl;
+        restoreDir (p, backupFile);
+    }
 }
 
-int main ()
+int main (int argc, char **argv)
 {
-    string world;
+    parseCommandLine(argc, argv);
 
-    cout << colorCode (Red) << styleCode (Bold)
-         << "enter save directory name"
-         << colorCode (Default) << endl;
+    if (options.world.empty()) {
+        cout << colorCode (Red) << styleCode (Bold)
+             << "enter save directory name"
+             << colorCode (Default) << endl;
 
-    getline (cin, world); // getline reads a whole line with whitespaces
+        getline (cin, options.world); // getline reads a whole line with whitespaces
+    }
+    else
+        cout << "using world from command line" << endl;
 
-    if (!filesystem::exists(world)) {
+    if (!filesystem::exists(options.savesDirectory / options.world)) {
         cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
              << "world does not exist, here are all available ones: "
              << colorCode (Default) << endl;
 
-        for (auto& p : filesystem::directory_iterator (world))
+        for (auto& p : filesystem::directory_iterator (options.savesDirectory))
             if (p.is_directory ())
                 cout << p << endl;
 
         return 1;
     }
 
-    restoreSave (world);
+    filesystem::current_path(options.savesDirectory); // set the working path
+
+    restoreSave (options.world);
 
     return 0;
 }

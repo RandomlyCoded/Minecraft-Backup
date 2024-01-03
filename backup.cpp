@@ -11,18 +11,11 @@ void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "backup "
          << colorCode (Blue) << styleCode (Bold)
-         << (dir.empty () ? "world root" : dir.relative_path ().c_str ())
+         << dir
          << colorCode (Default) << endl;
 
     // add directory to tar file
-    call ({"tar",  "--exclude=" + (dir / "*" / "*").string(),
-                   "-rf", backupFile, dir});
-
-    /**
-     * when not executing the command via shell (as system() would do), dir/ * would not get expanded, causing tar to try to add "dir/ *" instead of dir/files
-     * that means we can't use the "--no-recurion" - option
-     * but we can filter out directories manually by excluding dir/ * / *
-    **/
+    writeToArchive (backupFile, dir);
 }
 
 void backupSave (string world)
@@ -49,12 +42,14 @@ void backupSave (string world)
     filesystem::remove(backupFile);
 
     // backup files in the world root
-    backupDir (worldFixed, backupFile);
+//    backupDir (worldFixed, backupFile);
 
     // backup all the directories from the main world
     for (auto& p : filesystem::recursive_directory_iterator (world))
-        if (p.is_directory ())
+        if (p.is_directory ()) {
+            cout << "when calling: " << p << endl;
             backupDir (p, backupFile);
+        }
 
     cout << colorCode (Red) << styleCode (Bold)
          << "backup done! "
@@ -93,7 +88,9 @@ int main (int argc, char **argv)
 
     filesystem::current_path(options.savesDirectory); // set the working path
 
-    backupSave (options.world);
+    readFromArchive(filesystem::current_path().parent_path() / "backups" / (options.world + "-backup.tar.xz"), options.world);
+
+//    backupSave (options.world);
 
     return 0;
 }
