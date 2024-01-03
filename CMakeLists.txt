@@ -7,7 +7,7 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LibArchive REQUIRED)
 
-add_library(Helper STATIC process.h process.cpp utils.h)
+add_library(Helper STATIC utils.h)
 
 add_executable (Minecraft-Backup  backup.cpp)
 
