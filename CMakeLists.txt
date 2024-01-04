@@ -8,6 +8,7 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(LibArchive REQUIRED)
 
 add_library(Helper STATIC utils.h)
+set_target_properties(Helper PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable (Minecraft-Backup  backup.cpp)
 

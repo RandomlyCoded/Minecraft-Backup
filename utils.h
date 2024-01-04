@@ -1,12 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <assert.h>
 #include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <string>
-#include <regex.h>
 #include <vector>
 
 #include <archive.h>
