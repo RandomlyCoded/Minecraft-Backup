@@ -1,10 +1,15 @@
+#include "backup.h"
+
+#include "utils.h"
+#include "archiveFunctions.h"
+
 #include <iostream>
 #include <filesystem>
 
-#include "utils.h"
-
 using namespace std;
-using namespace randomly;
+
+namespace randomly
+{
 
 void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
@@ -41,7 +46,7 @@ void backupSave (string world)
     filesystem::remove(backupFile);
 
     // backup files in the world root
-//    backupDir (worldFixed, backupFile);
+    backupDir (worldFixed, backupFile);
 
     // backup all the directories from the main world
     for (auto& p : filesystem::recursive_directory_iterator (world))
@@ -59,37 +64,4 @@ void backupSave (string world)
          << colorCode (Default) << endl;
 }
 
-int main (int argc, char **argv)
-{
-    parseCommandLine(argc, argv);
-
-    if (options.world.empty()) {
-        cout << colorCode (Red) << styleCode (Bold)
-             << "enter save directory name"
-             << colorCode (Default) << endl;
-
-        getline (cin, options.world); // getline reads a whole line with whitespaces
-    }
-    else
-        cout << "using world from command line" << endl;
-
-    if (!filesystem::exists(options.savesDirectory / options.world)) {
-        cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
-             << "world does not exist, here are all available ones: "
-             << colorCode (Default) << endl;
-
-        for (auto& p : filesystem::directory_iterator (options.savesDirectory))
-            if (p.is_directory ())
-                cout << p << endl;
-
-        return 1;
-    }
-
-    filesystem::current_path(options.savesDirectory); // set the working path
-
-    readFromArchive(filesystem::current_path().parent_path() / "backups" / (options.world + "-backup.tar.xz"), options.world);
-
-//    backupSave (options.world);
-
-    return 0;
-}
+} // namespace randomly

@@ -57,35 +57,4 @@ void restoreSave (string world)
     }
 }
 
-int main (int argc, char **argv)
-{
-    parseCommandLine(argc, argv);
-
-    if (options.world.empty()) {
-        cout << colorCode (Red) << styleCode (Bold)
-             << "enter save directory name"
-             << colorCode (Default) << endl;
-
-        getline (cin, options.world); // getline reads a whole line with whitespaces
-    }
-    else
-        cout << "using world from command line" << endl;
-
-    if (!filesystem::exists(options.savesDirectory / options.world)) {
-        cout << colorCode (Red) << styleCode (Bold) << styleCode (Underline)
-             << "world does not exist, here are all available ones: "
-             << colorCode (Default) << endl;
-
-        for (auto& p : filesystem::directory_iterator (options.savesDirectory))
-            if (p.is_directory ())
-                cout << p << endl;
-
-        return 1;
-    }
-
-    filesystem::current_path(options.savesDirectory); // set the working path
-
-    restoreSave (options.world);
-
-    return 0;
-}
+} // namespace randomly
