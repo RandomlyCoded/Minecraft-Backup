@@ -14,9 +14,9 @@ namespace randomly
 void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "backup "
-         << colorCode (Blue) << styleCode (Bold)
+         << (Blue | Bold)
          << dir
-         << colorCode (Default) << endl;
+         << Default << endl;
 
     // add directory to tar file
     writeToArchive (backupFile, dir);
@@ -25,9 +25,9 @@ void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
 void backupSave (string world)
 {
     cout << "starting to backup "
-         << colorCode (Magenta) << styleCode (Bold)
+         << (Magenta | Bold)
          << world
-         << colorCode (Default) << endl;
+         << Default << endl;
 
     // we need to replace every whitespace with "\ "
     string worldFixed;
@@ -55,13 +55,13 @@ void backupSave (string world)
             backupDir (p, backupFile);
         }
 
-    cout << colorCode (Red) << styleCode (Bold)
+    cout << (Red | Bold)
          << "backup done! "
-         << colorCode (Default)
+         << Default
          << "backup file: "
-         << colorCode (Blue) << styleCode (Bold) << styleCode (Underline)
-         << backupFile
-         << colorCode (Default) << endl;
+         << (Blue | Bold)
+         << "\033]8;;file://" << backupFile.parent_path().string() << "\033\\" << backupFile.string() << "\033]8;;\033\\"
+         << Default << endl;
 }
 
 } // namespace randomly

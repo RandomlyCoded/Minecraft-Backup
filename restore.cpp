@@ -1,18 +1,19 @@
-#include <iostream>
-#include <filesystem>
-#include <vector>
-
+#include "archiveFunctions.h"
 #include "utils.h"
 
+#include <iostream>
+
 using namespace std;
-using namespace randomly;
+
+namespace randomly
+{
 
 void restoreDir (const filesystem::path &dir, const filesystem::path &backupFile)
 {
     cout << "restoring "
-         << colorCode (Blue) << styleCode (Bold)
+         << (Blue | Bold)
          << (dir.empty () ? "world root" : dir.relative_path ().c_str ())
-         << colorCode (Default) << endl;
+         << Default << endl;
 
     // create directory
     filesystem::create_directory(dir);
@@ -28,9 +29,9 @@ void restoreDir (const filesystem::path &dir, const filesystem::path &backupFile
 void restoreSave (string world)
 {
     cout << "restoring world "
-         << colorCode (Magenta) << styleCode (Bold)
+         << (Magenta | Bold)
          << world
-         << colorCode (Default) << endl;
+         << Default << endl;
 
     // we need to replace every whitespace with "\ "
     string worldFixed;
