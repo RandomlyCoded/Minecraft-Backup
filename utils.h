@@ -2,6 +2,7 @@
 #define RANDOMLY_UTILS_H
 
 #include <iostream>
+#include <random>
 
 namespace randomly
 {
@@ -57,6 +58,20 @@ static const std::string styleCode (Style s)
 static std::ostream &operator<<(std::ostream &os, Style s)
 {
     return os << styleCode(s);
+}
+
+static char *generateRandomExtension()
+{
+    auto data = new char[16];
+
+    for (int i = 0; i < 16; ++i) {
+        auto rnd = rand();
+        data[i] = (rnd % 26 + 65) | (rnd & 32);
+    }
+
+    std::cout << data << std::endl;
+
+    return data;
 }
 
 } // namespace randomly

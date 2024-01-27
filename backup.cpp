@@ -3,15 +3,18 @@
 #include "utils.h"
 #include "archiveFunctions.h"
 
+#include <cstring>
+#include <fcntl.h>
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
 using namespace std;
 
 namespace randomly
 {
 
-void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
+void backupDir (const filesystem::path &dir, archive *a)
 {
     cout << "backup "
          << (Blue | Bold)
@@ -19,7 +22,7 @@ void backupDir (const filesystem::path &dir, const filesystem::path &backupFile)
          << Default << endl;
 
     // add directory to tar file
-    writeToArchive (backupFile, dir);
+    writeToArchive (a, dir);
 }
 
 void backupSave (string world)
@@ -40,20 +43,22 @@ void backupSave (string world)
 
     const auto backupFile = filesystem::current_path().parent_path() / "backups" / (worldFixed + "-backup.tar.xz");
 
-    // clear previous backup
-    cout << "clearing previous backup" << endl;
-
-    filesystem::remove(backupFile);
-
     // backup files in the world root
-    backupDir (worldFixed, backupFile);
+    auto ext = generateRandomExtension();
+
+    auto archive = openWriteArchive(backupFile.string() + ext);
+
+    backupDir (worldFixed, archive);
 
     // backup all the directories from the main world
     for (auto& p : filesystem::recursive_directory_iterator (world))
         if (p.is_directory ()) {
-            cout << "when calling: " << p << endl;
-            backupDir (p, backupFile);
+            backupDir (p, archive);
         }
+
+    closeWriteArchive(archive);
+
+    filesystem::rename(backupFile.string() + ext, backupFile);
 
     cout << (Red | Bold)
          << "backup done! "
