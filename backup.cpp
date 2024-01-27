@@ -5,18 +5,32 @@
 
 #include <cstring>
 #include <fcntl.h>
-#include <iostream>
 #include <filesystem>
-#include <fstream>
+#include <iostream>
+#include <sys/ioctl.h>
 
 using namespace std;
 
 namespace randomly
 {
 
+namespace
+{
+
+int getScreenWidth()
+{
+    auto info = new winsize;
+
+    ioctl(0, TIOCGWINSZ, info);
+
+    return info->ws_col;
+}
+
+}
+
 void backupDir (const filesystem::path &dir, archive *a)
 {
-    cout << "backup "
+    cout << ClearLine << "backup "
          << (Blue | Bold)
          << dir
          << Default << endl;
@@ -60,13 +74,37 @@ void backupSave (string world)
 
     filesystem::rename(backupFile.string() + ext, backupFile);
 
-    cout << (Red | Bold)
+    cout << ClearLine << (Red | Bold)
          << "backup done! "
          << Default
          << "backup file: "
          << (Blue | Bold)
          << "\033]8;;file://" << backupFile.parent_path().string() << "\033\\" << backupFile.string() << "\033]8;;\033\\"
          << Default << endl;
+}
+
+void setProgressBar(int filesTotal, int filesProcessed)
+{
+    const auto width = getScreenWidth() - 4;
+    // move up one line and clear previous line
+    cout << "\r" << "\033[2K";
+
+    const auto amt = width * filesProcessed / filesTotal;
+
+    cout << Green;
+
+    for (int i = 0; i < amt; ++i)
+        cout << '#';
+
+    cout << (Red | Bold);
+
+    for (int i = amt; i < width; ++i)
+        cout << '_';
+
+    cout << Default;
+
+    cout << '\r';
+    cout.flush();
 }
 
 } // namespace randomly

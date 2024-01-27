@@ -3,9 +3,14 @@
 
 #include <iostream>
 #include <random>
+#include <string>
 
 namespace randomly
 {
+
+using namespace std::string_view_literals;
+
+constexpr auto ClearLine = "\033[2K"sv;
 
 enum Style
 {
