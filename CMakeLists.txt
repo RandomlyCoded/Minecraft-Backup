@@ -17,6 +17,10 @@ add_executable (Minecraft-Backup
     utils.h
 )
 
+add_custom_target(Documentation SOURCES
+    README.md
+)
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(Minecraft-Backup  PUBLIC RANDOMLY_DEBUGGING)
 endif()
