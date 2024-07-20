@@ -60,7 +60,10 @@ private:
 Backup::Backup(Options &options, GUIManager *guiMgr)
     : m_options(options)
     , m_guiMgr(guiMgr)
-{}
+{
+    if(m_guiMgr)
+        m_guiMgr->setBackup(this);
+}
 
 void Backup::backupSave(std::string world)
 {

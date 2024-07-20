@@ -9,6 +9,8 @@
 namespace randomly
 {
 
+class Backup;
+
 // base class to abstract away the GUI, create a derived class and pass an instance when creating the backup to handle your own GUI
 class GUIManager
 {
@@ -16,8 +18,14 @@ public:
     GUIManager(Options &opt) : m_options(opt) {}
     virtual void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory) = 0;
 
+
 protected:
+    Backup *m_backup;
     Options &m_options;
+
+private:
+    friend Backup;
+    void setBackup(Backup *backup) { m_backup = backup; } // only called when constructing a Backup
 };
 
 class Backup
