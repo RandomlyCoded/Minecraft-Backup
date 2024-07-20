@@ -59,14 +59,14 @@ private:
 
 void Backup::backupSave(std::string world)
 {
-    if (!filesystem::exists(m_options.savesDirectory / m_options.world)) {
+    if (m_options.world.empty() || !filesystem::exists(m_options.savesDirectory / m_options.world)) {
         cerr << (Red | Bold | Underline)
              << "world does not exist, here are all available ones: " << endl
              << Default;
 
         for (auto& p : filesystem::directory_iterator (m_options.savesDirectory))
             if (p.is_directory ())
-                cout << p << endl;
+                cout << p.path().filename().string() << endl;
 
         exit(1);
     }
@@ -126,7 +126,7 @@ void Backup::restoreSave (string world)
 {
     const auto backupFile = m_options.savesDirectory.parent_path() / "backups" / (world + "-backup.tar.xz");
 
-    if (!filesystem::exists(backupFile)) {
+    if (m_options.world.empty() || !filesystem::exists(backupFile)) {
         cerr << (Red | Bold | Underline)
              << "backup does not exist, here are all available ones: " << endl
              << Default;
