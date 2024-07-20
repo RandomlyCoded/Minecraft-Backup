@@ -4,8 +4,6 @@ import QtQml
 
 import McBackupGUI
 
-import QtQuick.Controls.Basic.impl
-
 Window {
     title: "Minecraft Backup tool"
 
@@ -56,33 +54,8 @@ Window {
         down: GuiHandler.running ? true : undefined
     }
 
-    Rectangle {
-        id: progress
-
-        width: 150
-        height: 16
-
-        radius: 4
-
-        x: 8
-        y: 24
-
-        color: "#cc0000"
-        border.color: "black"
-        border.width: 1
-
-        Rectangle {
-            id: bar
-
-            radius: parent.radius
-
-            border.color: "#2d2d2d"
-            border.width: parent.border.width
-
-            width: parent.width * (GuiHandler.filesProcessed / GuiHandler.filesTotal)
-            height: parent.height
-
-            color: "#00cc00"
-        }
+    StatusSection {
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
     }
 }

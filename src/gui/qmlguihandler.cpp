@@ -29,11 +29,11 @@ void QmlGuiHandler::update(int filesTotal, int filesProcessed, const std::filesy
     emit ping();
 }
 
-std::filesystem::path QmlGuiHandler::currentFile() const
-{ return m_currentFile; }
+QString QmlGuiHandler::currentFile() const
+{ return QString::fromStdString(m_currentFile.string()); }
 
-std::filesystem::path QmlGuiHandler::currentDirectory() const
-{ return m_currentDirectory; }
+QString QmlGuiHandler::currentDirectory() const
+{ return QString::fromStdString(m_currentDirectory.string()); }
 
 int QmlGuiHandler::filesProcessed() const
 { return m_filesProcessed; }

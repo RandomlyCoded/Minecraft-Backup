@@ -58,8 +58,8 @@ class QmlGuiHandler : public QObject, public GUIManager
 {
     Q_OBJECT
 
-    Q_PROPERTY(std::filesystem::path currentDirectory READ currentDirectory NOTIFY ping)
-    Q_PROPERTY(std::filesystem::path currentFile READ currentFile NOTIFY ping)
+    Q_PROPERTY(QString currentDirectory READ currentDirectory NOTIFY ping)
+    Q_PROPERTY(QString currentFile READ currentFile NOTIFY ping)
     Q_PROPERTY(int filesProcessed READ filesProcessed NOTIFY ping)
     Q_PROPERTY(int filesTotal READ filesTotal NOTIFY ping)
 
@@ -74,8 +74,8 @@ public:
     void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory);
 
     // Q_PROPERTY getters
-    std::filesystem::path currentFile() const;
-    std::filesystem::path currentDirectory() const;
+    QString currentFile() const;
+    QString currentDirectory() const;
 
     int filesProcessed() const;
     int filesTotal() const;
