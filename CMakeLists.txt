@@ -5,12 +5,11 @@ project (Minecraft-Backup LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# required for GUI/Qt
-set(CMAKE_AUTOMOC ON)
-
 find_package(LibArchive REQUIRED)
 
-# required for GUI
+# required for GUI/Qt
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED Quick Core)
 
 include_directories("src")
@@ -31,6 +30,8 @@ add_executable (Minecraft-Backup
 add_executable (Minecraft-Backup-GUI
     src/gui/main.cpp
     src/gui/qmlguihandler.h src/gui/qmlguihandler.cpp
+
+    qml/gui.qrc
 )
 
 add_custom_target(Documentation SOURCES
