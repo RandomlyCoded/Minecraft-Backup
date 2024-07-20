@@ -22,10 +22,8 @@ class QmlGuiHandler : public QObject, public GUIManager
 
 public:
     // GUIManager interface
-    QmlGuiHandler(Options &opt) : GUIManager(opt) {}
+    QmlGuiHandler(Options &opt, QObject *parent = nullptr) : QObject(parent), GUIManager(opt) {}
     void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory);
-
-    void setParent(QObject *parent) { QObject::setParent(parent); } // need to overload this to set the parent after initialization
 
     // Q_PROPERTY getters
     std::filesystem::path currentFile() const;
