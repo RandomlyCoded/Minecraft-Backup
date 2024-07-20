@@ -41,8 +41,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(Minecraft-Backup  PUBLIC RANDOMLY_DEBUGGING)
 endif()
 
-target_link_options(Minecraft-Backup-GUI PRIVATE -v)
-
 target_link_libraries(Minecraft-Backup      PRIVATE mcBackupCore)
 target_link_libraries(Minecraft-Backup-GUI  PRIVATE mcBackupCore)
 target_link_libraries(Minecraft-Backup-GUI  PRIVATE Qt6::Quick Qt6::Core)
