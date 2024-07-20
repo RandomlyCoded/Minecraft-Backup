@@ -2,11 +2,57 @@
 #define QMLGUIHANDLER_H
 
 #include "backup.h"
+
 #include <QDir>
 #include <QObject>
+#include <QThread>
 
 namespace randomly
 {
+
+class BackupThread : public QThread
+{
+public:
+    BackupThread(QObject *parent = nullptr)
+        : QThread(parent)
+    {}
+
+    // I think you can do it in a better way, but I'll stick to the intended use by calling start()
+
+    // also we can't pass the backup when initializing, since the Backup is created after the GUI manager
+    void backup(Backup *backup) {
+        if (isRunning())
+            return;
+
+        m_backup = backup;
+        m_mode = Backup;
+        start();
+    }
+    void restore (Backup *backup) {
+        if (isRunning())
+            return;
+
+        m_backup = backup;
+        m_mode = Restore;
+        start();
+    }
+
+protected:
+    void run()
+    {
+        switch(m_mode) {
+        case Restore: m_backup->restore(); break;
+        case Backup: m_backup->backup(); break;
+        }
+    };
+
+private:
+    Backup *m_backup;
+
+    enum Mode {
+        Restore, Backup
+    } m_mode;
+};
 
 class QmlGuiHandler : public QObject, public GUIManager
 {
@@ -17,12 +63,14 @@ class QmlGuiHandler : public QObject, public GUIManager
     Q_PROPERTY(int filesProcessed READ filesProcessed NOTIFY ping)
     Q_PROPERTY(int filesTotal READ filesTotal NOTIFY ping)
 
-    Q_PROPERTY(QString world READ world WRITE setWorld FINAL)
-    Q_PROPERTY(QDir directory READ directory WRITE setDirectory FINAL)
+    Q_PROPERTY(QString world READ world WRITE setWorld NOTIFY dummySignal) // add dummy signal so QML thinks it is notifyable and doesn't produce errors
+    Q_PROPERTY(QDir directory READ directory WRITE setDirectory NOTIFY dummySignal)
+
+    Q_PROPERTY(bool running READ running NOTIFY runningChanged)
 
 public:
     // GUIManager interface
-    QmlGuiHandler(Options &opt, QObject *parent = nullptr) : QObject(parent), GUIManager(opt) {}
+    QmlGuiHandler(Options &opt, QObject *parent = nullptr);
     void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory);
 
     // Q_PROPERTY getters
@@ -35,6 +83,10 @@ public:
     QString world() const;
     QDir directory() const;
 
+    bool running() {
+        return m_worker->isRunning();
+    }
+
 public slots:
     void startBackup();
     void startRestore();
@@ -45,11 +97,21 @@ public slots:
 signals:
     void ping();
 
+    void dummySignal();
+
+    void runningChanged();
+
 private:
     std::filesystem::path m_currentFile;
     std::filesystem::path m_currentDirectory;
-    int m_filesProcessed;
-    int m_filesTotal;
+    int m_filesProcessed = 1;
+    int m_filesTotal = 1;
+
+    void reset
+        ();;
+
+    BackupThread *m_worker;
+    QDir m_directory;
 };
 
 } // namespace randomly

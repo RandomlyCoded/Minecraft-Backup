@@ -5,6 +5,19 @@
 namespace randomly
 {
 
+QmlGuiHandler::QmlGuiHandler(Options &opt, QObject *parent)
+    : QObject(parent),
+    GUIManager(opt),
+    m_worker(new BackupThread{this})
+{
+    connect(m_worker, &QThread::started, this, &QmlGuiHandler::runningChanged);
+
+    connect(m_worker, &QThread::finished, this, [this] {
+        reset();
+        emit runningChanged();
+    });
+}
+
 void QmlGuiHandler::update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory)
 {
     m_filesTotal = filesTotal;
@@ -39,12 +52,12 @@ QDir QmlGuiHandler::directory() const
 
 void QmlGuiHandler::startBackup()
 {
-    m_backup->restoreSave(m_options.world);
+    m_worker->backup(m_backup);
 }
 
 void QmlGuiHandler::startRestore()
 {
-    m_backup->backupSave(m_options.world);
+    m_worker->restore(m_backup);
 }
 
 void QmlGuiHandler::setWorld(QString world)
@@ -55,6 +68,17 @@ void QmlGuiHandler::setWorld(QString world)
 void QmlGuiHandler::setDirectory(QDir dir)
 {
     m_options.savesDirectory = dir.path().toStdString();
+}
+
+void QmlGuiHandler::reset()
+{
+    m_filesProcessed = 1;
+    m_filesTotal = 1;
+
+    m_currentFile = "";
+    m_currentDirectory = "";
+
+    emit ping();
 }
 
 } // namespace randomly

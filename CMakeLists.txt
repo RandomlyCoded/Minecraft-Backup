@@ -36,6 +36,8 @@ add_executable (Minecraft-Backup-GUI
 
 add_custom_target(Documentation SOURCES
     README.md
+
+    ui_playground.ui
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

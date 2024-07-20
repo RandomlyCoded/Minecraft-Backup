@@ -33,6 +33,9 @@ class Backup
 public:
     Backup(Options &options, GUIManager *guiMgr = nullptr);
 
+    void backup() { backupSave(m_options.world); }
+    void restore() { restoreSave(m_options.world); }
+
     void backupSave(std::string world);
     void restoreSave(std::string world);
 
