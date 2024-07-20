@@ -60,11 +60,7 @@ private:
 Backup::Backup(Options &options, GUIManager *guiMgr)
     : m_options(options)
     , m_guiMgr(guiMgr)
-{
-    // in case no object was supplied (the default), create a dummy object in case the program is somehow in GUI mode
-    if (guiMgr == nullptr)
-        m_guiMgr = new GUIManager{m_options};
-}
+{}
 
 void Backup::backupSave(std::string world)
 {
@@ -249,8 +245,13 @@ void Backup::setTerminalProgressBar(int filesTotal, int filesProcessed, const fi
     cout.flush();
 }
 
-void Backup::setGUIProgressState(int filesTotal, int filesProcessed, const std::filesystem::__cxx11::path &currentFile)
+void Backup::setGUIProgressState(int filesTotal, int filesProcessed, const filesystem::path &currentFile)
 {
+    if (!m_guiMgr) {
+        cerr << (Red | Bold) << "ERROR: no GUI Manager provided, but GUI requested. Terminating." << Default << endl;
+        exit(EXIT_FAILURE);
+    }
+
     m_guiMgr->update(filesTotal, filesProcessed, currentFile, m_currentlyInProgress);
 }
 
