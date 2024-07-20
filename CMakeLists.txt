@@ -7,14 +7,21 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LibArchive REQUIRED)
 
+add_library(mcBackupCore SHARED
+    src/backup.h src/backup.cpp
+
+    src/archiveFunctions.h src/archiveFunctions.cpp
+    src/commandLine.h src/commandLine.cpp
+
+    src/utils.h
+)
+
 add_executable (Minecraft-Backup
-    backup.h backup.cpp
+    src/main.cpp
+)
 
-    main.cpp
-    archiveFunctions.h archiveFunctions.cpp
-    commandLine.h commandLine.cpp
-
-    utils.h
+add_executable (Minecraft-Backup-GUI
+    src/gui-main.cpp
 )
 
 add_custom_target(Documentation SOURCES
@@ -25,9 +32,12 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(Minecraft-Backup  PUBLIC RANDOMLY_DEBUGGING)
 endif()
 
-target_link_libraries(Minecraft-Backup  PRIVATE LibArchive::LibArchive)
+target_link_libraries(Minecraft-Backup      PRIVATE mcBackupCore)
+target_link_libraries(Minecraft-Backup-GUI  PRIVATE mcBackupCore)
 
-install (TARGETS Minecraft-Backup
+target_link_libraries(mcBackupCore  PRIVATE LibArchive::LibArchive)
+
+install (TARGETS Minecraft-Backup mcBackupCore
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
