@@ -8,8 +8,6 @@
 namespace randomly
 {
 
-using namespace std::string_view_literals;
-
 enum Style : short
 {
     Default   = 0,
