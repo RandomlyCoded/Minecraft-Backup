@@ -13,14 +13,17 @@ namespace randomly
 class GUIManager
 {
 public:
-    GUIManager(Options &opt) {}
-    void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory) {};
+    GUIManager(Options &opt) : m_options(opt) {}
+    virtual void update(int filesTotal, int filesProcessed, const std::filesystem::path &currentFile, const std::filesystem::path &currentDirectory) = 0;
+
+protected:
+    Options &m_options;
 };
 
 class Backup
 {
 public:
-    Backup(Options options, GUIManager *guiMgr = nullptr);;
+    Backup(Options &options, GUIManager *guiMgr = nullptr);
 
     void backupSave(std::string world);
     void restoreSave(std::string world);
@@ -32,7 +35,7 @@ private:
     void restoreDir(const std::filesystem::path &dir, const std::filesystem::path &backupFile, const char *prefix);
 
 private:
-    Options m_options;
+    Options &m_options;
     GUIManager *m_guiMgr;
 
     std::filesystem::path m_currentlyInProgress;

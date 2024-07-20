@@ -57,7 +57,7 @@ private:
  * Backup functionality *
   **********************/
 
-Backup::Backup(Options options, GUIManager *guiMgr)
+Backup::Backup(Options &options, GUIManager *guiMgr)
     : m_options(options)
     , m_guiMgr(guiMgr)
 {

@@ -2,6 +2,8 @@
 #include "backup.h"
 #include "utils.h"
 
+#include "qmlguihandler.h"
+
 using namespace std;
 
 using namespace randomly;
@@ -62,7 +64,7 @@ int main(int argc, char **argv)
 
     options.useGUI = true;
 
-    Backup backup(options);
+    Backup backup(options, new QmlGuiHandler{options});
 
     if(options.backup)
         backup.backupSave(options.world);
