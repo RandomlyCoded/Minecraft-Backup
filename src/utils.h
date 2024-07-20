@@ -82,9 +82,10 @@ static char *generateRandomExtension()
     for (int i = 0; i < 16; ++i) {
         auto rnd = rand();
         data[i] = (rnd % 26 + 65) | (rnd & 32);
-    }
 
-    std::cout << data << std::endl;
+        // mod 26 normalizes the result into "normal" characters, adding 65 moves it into the ASCII character area
+        // ORing with (rnd & 32) might add another 32 which shifts the character into lowercase
+    }
 
     return data;
 }
