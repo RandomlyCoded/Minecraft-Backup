@@ -10,9 +10,7 @@ namespace randomly
 
 using namespace std::string_view_literals;
 
-constexpr auto ClearLine = "\033[2K"sv;
-
-enum Style
+enum Style : short
 {
     Default   = 0,
     Black     = 1,
@@ -25,8 +23,12 @@ enum Style
     White     = 8,
     ColorMask = 15,
 
-    Bold      = 16,
-    Underline = 32
+    Bold         = 16,
+    Underline    = 32,
+    UnderlineOff = 64,
+
+    ClearLine = 1024,
+    LineUp    = 1025
 };
 
 static Style operator|(Style lhs, Style rhs)
@@ -36,6 +38,12 @@ static Style operator|(Style lhs, Style rhs)
 
 static const std::string styleCode (Style s)
 {
+    if (s == ClearLine)
+        return "\033[2K";
+
+    if (s == LineUp)
+        return "\033[A";
+
     std::string data;
 
     switch (s & ColorMask)
@@ -56,6 +64,8 @@ static const std::string styleCode (Style s)
 
     if (s & Underline)
         data += "\033[04m";
+    if (s & UnderlineOff)
+        data += "\033[24m";
 
     return data;
 }
@@ -67,7 +77,9 @@ static std::ostream &operator<<(std::ostream &os, Style s)
 
 static char *generateRandomExtension()
 {
-    auto data = new char[16];
+    // 16 characters + NULL byte
+    auto data = new char[17];
+    data[16] = 0;
 
     for (int i = 0; i < 16; ++i) {
         auto rnd = rand();

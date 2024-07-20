@@ -9,7 +9,6 @@ find_package(LibArchive REQUIRED)
 
 add_executable (Minecraft-Backup
     backup.h backup.cpp
-    restore.h restore.cpp
 
     main.cpp
     archiveFunctions.h archiveFunctions.cpp
