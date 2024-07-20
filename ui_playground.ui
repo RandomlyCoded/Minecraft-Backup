@@ -105,32 +105,6 @@
      <string>directory</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>290</y>
-      <width>87</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>start backup</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>280</y>
-      <width>87</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>start restore</string>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="checkBox">
     <property name="geometry">
      <rect>
@@ -142,19 +116,6 @@
     </property>
     <property name="text">
      <string>show backups instead of worlds</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>330</y>
-      <width>131</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>open backup dir</string>
     </property>
    </widget>
   </widget>
