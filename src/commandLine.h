@@ -17,6 +17,8 @@ struct Options {
     std::string world;
     std::filesystem::path savesDirectory = std::filesystem::current_path();
 
+    bool useGUI = false;
+
     /// used to assign the tool when parsing command line arguments
     bool operator= (const char *rhs);
 };

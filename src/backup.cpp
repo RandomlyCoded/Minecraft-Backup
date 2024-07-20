@@ -57,6 +57,15 @@ private:
  * Backup functionality *
   **********************/
 
+Backup::Backup(Options options, GUIManager *guiMgr)
+    : m_options(options)
+    , m_guiMgr(guiMgr)
+{
+    // in case no object was supplied (the default), create a dummy object in case the program is somehow in GUI mode
+    if (guiMgr == nullptr)
+        m_guiMgr = new GUIManager{m_options};
+}
+
 void Backup::backupSave(std::string world)
 {
     if (m_options.world.empty() || !filesystem::exists(m_options.savesDirectory / m_options.world)) {
@@ -199,13 +208,10 @@ void Backup::restoreDir (const filesystem::path &dir, const filesystem::path &ba
 
 void Backup::updateUiState(int filesTotal, int filesProcessed, const filesystem::path &currentFile)
 {
-#ifdef MINECRAFT_BACKUP_GUI
-    setGuiProgresState(filesTotal, filesProcessed, currentFile);
-
-#else
-    setTerminalProgressBar(filesTotal, filesProcessed, currentFile);
-
-#endif // MINECRAFT_BACKUP_GUI
+    if (m_options.useGUI)
+        setGUIProgressState(filesTotal, filesProcessed, currentFile);
+    else
+        setTerminalProgressBar(filesTotal, filesProcessed, currentFile);
 }
 
 void Backup::setTerminalProgressBar(int filesTotal, int filesProcessed, const filesystem::path &currentFile)
@@ -241,6 +247,11 @@ void Backup::setTerminalProgressBar(int filesTotal, int filesProcessed, const fi
     cout << '\r';
     cout  << LineUp;
     cout.flush();
+}
+
+void Backup::setGUIProgressState(int filesTotal, int filesProcessed, const std::filesystem::__cxx11::path &currentFile)
+{
+    m_guiMgr->update(filesTotal, filesProcessed, currentFile, m_currentlyInProgress);
 }
 
 } // namespace randomly
