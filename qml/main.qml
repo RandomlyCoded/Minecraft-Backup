@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import QtQml
 
 import McBackupGUI
@@ -34,24 +33,8 @@ Window {
 //        }
 //    }
 
-    Button {
-        x: 200
-        y: 8
-        text: "start backup"
-
-        onClicked: GuiHandler.startBackup()
-
-        down: GuiHandler.running ? true : undefined
-    }
-
-    Button {
-        x: 200
-        y: 32
-        text: "start restore"
-
-        onClicked: GuiHandler.startRestore()
-
-        down: GuiHandler.running ? true : undefined
+    ActionSection {
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     StatusSection {

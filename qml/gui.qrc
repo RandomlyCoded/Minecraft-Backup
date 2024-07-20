@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>TextInputField.qml</file>
         <file>StatusSection.qml</file>
+        <file>ActionSection.qml</file>
     </qresource>
 </RCC>

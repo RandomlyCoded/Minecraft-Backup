@@ -94,6 +94,9 @@ public slots:
     void setWorld(QString world);
     void setDirectory(QDir dir);
 
+    void openBackupDirectory();
+    void openSavesDirectory();
+
 signals:
     void ping();
 

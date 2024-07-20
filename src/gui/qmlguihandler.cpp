@@ -1,6 +1,8 @@
 #include "qmlguihandler.h"
 
 #include <QDebug>
+#include <QDesktopServices>
+#include <QUrl>
 
 namespace randomly
 {
@@ -68,6 +70,25 @@ void QmlGuiHandler::setWorld(QString world)
 void QmlGuiHandler::setDirectory(QDir dir)
 {
     m_options.savesDirectory = dir.path().toStdString();
+}
+
+void QmlGuiHandler::openBackupDirectory()
+{
+    auto path = m_options.savesDirectory / ".." / "backups";
+    auto url = QUrl{path.c_str()};
+    QDesktopServices::openUrl(url);
+}
+
+void QmlGuiHandler::openSavesDirectory()
+{
+    // apparently, QDesktopServices will fail to launch a file explorer if the requested directory is the current directory
+    // at least on Debian
+
+    // BUT using an URL like this works (the directory "none" doesn't actually need to exist)
+
+    auto path = m_options.savesDirectory / "none" / "..";
+    auto url = QUrl{path.c_str()};
+    QDesktopServices::openUrl(url);
 }
 
 void QmlGuiHandler::reset()
