@@ -6,7 +6,7 @@ using namespace std;
 
 using namespace randomly;
 
-// Helper for underlining first letter
+// Helper for underlining the first letter of a text
 struct FirstLetterUnderlined
 {
     const char *txt;
