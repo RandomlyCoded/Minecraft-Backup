@@ -30,8 +30,10 @@ add_executable (Minecraft-Backup
 add_executable (Minecraft-Backup-GUI
     src/gui/main.cpp
     src/gui/qmlguihandler.h src/gui/qmlguihandler.cpp
+    src/gui/worldiconprovider.h src/gui/worldiconprovider.cpp
 
     qml/gui.qrc
+    assets/assets.qrc
 )
 
 add_custom_target(Documentation SOURCES

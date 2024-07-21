@@ -68,6 +68,19 @@ Item {
 
         function update() {
             text = "current world: <b>" + worldInput.text + "</b>"
+
+            // update the world icon preview here to not add another oneliner
+            worldIconPreview.source = "image://worldIcon/" + worldInput.text
         }
+    }
+
+    Image {
+        id: worldIconPreview
+        source: "image://worldIcon/" + GuiHandler.world
+
+        anchors.left: worldInput.right
+        anchors.leftMargin: 8
+
+        anchors.top: worldInput.top
     }
 }

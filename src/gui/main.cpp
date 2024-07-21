@@ -2,6 +2,7 @@
 #include "commandLine.h"
 
 #include "qmlguihandler.h"
+#include "worldiconprovider.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -35,6 +36,8 @@ int Application::run(int argc, char **argv, QUrl qmlRoot)
     QQmlApplicationEngine qml;
 
     qmlRegisterSingletonInstance<QmlGuiHandler>("McBackupGUI", 1, 0, "GuiHandler", gui);
+
+    qml.addImageProvider("worldIcon", new WorldIconProvider(this, options));
 
     qml.load(qmlRoot);
 
