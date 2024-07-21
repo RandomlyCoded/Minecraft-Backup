@@ -95,4 +95,45 @@ Item {
 
         text: GuiHandler.currentFile
     }
+
+    Text {
+        id: weAreDone
+
+        anchors.right: progressBar.right
+
+        anchors.top: parent.top
+
+        font.pixelSize: 20
+        text: "Done!"
+
+        opacity: 0
+
+        Timer {
+            id: wait
+
+            interval: 2000 // 2 s
+
+            onTriggered: fadeOut.start()
+        }
+
+
+        PropertyAnimation {
+            id: fadeOut
+            target: weAreDone
+            property: "opacity"
+
+            from: 1
+            to: 0
+
+            duration: 2000
+        }
+
+        Connections {
+            target: GuiHandler
+            function onDone() {
+                weAreDone.opacity = 1
+                wait.start()
+            }
+        }
+    }
 }

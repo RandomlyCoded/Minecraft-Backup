@@ -16,6 +16,7 @@ QmlGuiHandler::QmlGuiHandler(Options &opt, QObject *parent)
 
     connect(m_worker, &QThread::finished, this, [this] {
         reset();
+        emit done();
         emit runningChanged();
     });
 }

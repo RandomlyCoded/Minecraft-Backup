@@ -104,6 +104,7 @@ signals:
     void dummySignal();
 
     void runningChanged();
+    void done();
 
 private:
     std::filesystem::path m_currentFile;
