@@ -3,12 +3,6 @@ import QtQuick
 import McBackupGUI
 
 Item {
-//    Rectangle {
-//        anchors.fill: parent
-//        opacity: 0.2
-//        color: "blue"
-//    }
-
     width: parent.width
 
     height: 64

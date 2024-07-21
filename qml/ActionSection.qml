@@ -7,12 +7,6 @@ Item {
     width: parent.width
     height: 64
 
-    Rectangle {
-        anchors.fill: parent
-        color: "green"
-        opacity: 0.2
-    }
-
     Button {
         id: backupButton
 
