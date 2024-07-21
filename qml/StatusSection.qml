@@ -86,14 +86,14 @@ Item {
 
     // file name display
     Text {
-        id : directoryNameView
+        id: directoryNameView
         anchors.left: progressBar.left
 
         text: GuiHandler.currentDirectory
     }
 
     Text {
-        id : fileNameView
+        id: fileNameView
         anchors.left: progressBar.left
 
         anchors.top: directoryNameView.bottom

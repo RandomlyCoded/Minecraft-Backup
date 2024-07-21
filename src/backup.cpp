@@ -84,13 +84,12 @@ void Backup::backupSave(std::string world)
          << world
          << Default << endl;
 
-    const auto backupFile = m_options.savesDirectory.parent_path() / "backups" / (world + "-backup.tar.xz");
-
-    // backup files in the world root
     auto ext = generateRandomExtension();
+    const auto backupFile = m_options.savesDirectory.parent_path() / "backups" / (world + "-backup.tar.xz");
 
     auto archive = openWriteArchive(backupFile.string() + ext);
 
+    // backup files in the world root
     backupDir (world, archive);
 
     // backup all the directories from the main world
