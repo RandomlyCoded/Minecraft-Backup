@@ -4,11 +4,13 @@ Rectangle {
     property string defaultText: "insert text here"
     property color backgroundColor: "white"
     property color borderColor: "black"
+    property color textColor: "black"
     property int padding: 4
     property int roundness: 2 // I have to name it roundness because otherwise it might conflict with the Rectangle's property
 
-    property string text: input.text
+    property int minimumWidth: 256
 
+    property string text: input.text
     property string initialText: ""
 
     onInitialTextChanged: input.text = initialText
@@ -17,18 +19,20 @@ Rectangle {
 
     radius: roundness
 
-    width: Math.max(input.width, 128)
+    width: Math.max(input.width, minimumWidth)
     height: input.height
 
     color: backgroundColor
     border.color: borderColor
 
+    clip: true
+
     TextInput {
         id: input
 
-        color: parent.borderColor
+        color: parent.textColor
 
-        width: 128
+        width: parent.width
 
         padding: parent.padding
 

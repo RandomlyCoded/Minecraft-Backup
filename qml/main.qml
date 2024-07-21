@@ -8,30 +8,14 @@ Window {
 
     width: 640
     height: 480
+    minimumWidth: 640
+    minimumHeight: 480
     visible: true
 
-    TextInputField {
-        id: worldInput
-
-        initialText: GuiHandler.world
-
-        defaultText: "world name"
-
-        onValueUpdated: {
-            console.log(text);
-            GuiHandler.setWorld(text)
-        }
+    InputSection {
+        anchors.top: parent.top
+        anchors.topMargin: 8
     }
-
-//    Connections {
-//        target: GuiHandler
-
-//        onPing: {
-//            console.log(GuiHandler.filesProcessed, "/", GuiHandler.filesTotal)
-//            console.log(GuiHandler.currentDirectory)
-//            console.log(GuiHandler.currentFile)
-//        }
-//    }
 
     ActionSection {
         anchors.verticalCenter: parent.verticalCenter

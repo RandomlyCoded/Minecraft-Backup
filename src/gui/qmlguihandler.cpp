@@ -46,10 +46,9 @@ int QmlGuiHandler::filesTotal() const
 QString QmlGuiHandler::world() const
 { return QString::fromStdString(m_options.world); }
 
-QDir QmlGuiHandler::directory() const
+QString QmlGuiHandler::directory() const
 {
-    QString dirName = QString::fromStdString(m_options.savesDirectory.string());
-    return QDir::fromNativeSeparators(dirName);
+    return QString::fromStdString(m_options.savesDirectory.string());
 }
 
 void QmlGuiHandler::startBackup()
@@ -67,9 +66,9 @@ void QmlGuiHandler::setWorld(QString world)
     m_options.world = world.toStdString();
 }
 
-void QmlGuiHandler::setDirectory(QDir dir)
+void QmlGuiHandler::setDirectory(QString dir)
 {
-    m_options.savesDirectory = dir.path().toStdString();
+    m_options.savesDirectory = dir.toStdString();
 }
 
 void QmlGuiHandler::openBackupDirectory()
@@ -89,6 +88,11 @@ void QmlGuiHandler::openSavesDirectory()
     auto path = m_options.savesDirectory / "none" / "..";
     auto url = QUrl{path.c_str()};
     QDesktopServices::openUrl(url);
+}
+
+bool QmlGuiHandler::doesDirectoryExist(QString dir)
+{
+    return std::filesystem::exists(dir.toStdString());
 }
 
 void QmlGuiHandler::reset()

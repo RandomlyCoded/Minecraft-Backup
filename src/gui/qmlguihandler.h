@@ -3,7 +3,6 @@
 
 #include "backup.h"
 
-#include <QDir>
 #include <QObject>
 #include <QThread>
 
@@ -64,7 +63,7 @@ class QmlGuiHandler : public QObject, public GUIManager
     Q_PROPERTY(int filesTotal READ filesTotal NOTIFY ping)
 
     Q_PROPERTY(QString world READ world WRITE setWorld NOTIFY dummySignal) // add dummy signal so QML thinks it is notifyable and doesn't produce errors
-    Q_PROPERTY(QDir directory READ directory WRITE setDirectory NOTIFY dummySignal)
+    Q_PROPERTY(QString directory READ directory WRITE setDirectory NOTIFY dummySignal)
 
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
 
@@ -81,7 +80,7 @@ public:
     int filesTotal() const;
 
     QString world() const;
-    QDir directory() const;
+    QString directory() const;
 
     bool running() {
         return m_worker->isRunning();
@@ -92,10 +91,12 @@ public slots:
     void startRestore();
 
     void setWorld(QString world);
-    void setDirectory(QDir dir);
+    void setDirectory(QString dir);
 
     void openBackupDirectory();
     void openSavesDirectory();
+
+    bool doesDirectoryExist(QString dir);
 
 signals:
     void ping();
@@ -114,7 +115,7 @@ private:
         ();;
 
     BackupThread *m_worker;
-    QDir m_directory;
+   QString m_directory;
 };
 
 } // namespace randomly
