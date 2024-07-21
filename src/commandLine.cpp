@@ -32,8 +32,7 @@ void printHelp()
               << "Usage: "                                                              << std::endl
               << "\t[-w <world name>]\t\t set world name (default: ask user)"           << std::endl
               << "\t[-p <directory>]\t\t path to saves directory (default: current)"    << std::endl
-              << "\t[-t <tool>]\t\t\t tool to use. (default: backup)"                   << std::endl
-              << "\t           \t\t\t - valid values: \"backup\", \"restore\""          << std::endl
+              << "\t[-t <backup|restore>]\t\t tool to use. (default: backup)"           << std::endl
               << "\t[--help]\t\t\t print this help"                                     << std::endl;
 }
 
